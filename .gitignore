@@ -1,1 +1,4 @@
 rag/
+data_thws.json
+schema_thws.json
+chroma_persistent_storage/
