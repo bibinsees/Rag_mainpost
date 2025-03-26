@@ -5,3 +5,6 @@ chroma_persistent_storage/
 mainpost_texts
 test.json
 news_articles/
+chroma_storage/
+chroma_store
+arena_filtered
