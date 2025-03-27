@@ -1,10 +1,11 @@
 rag/
 data_thws.json
 schema_thws.json
-chroma_persistent_storage/
-mainpost_texts
+mainpost_full_texts
 test.json
-news_articles/
-chroma_storage/
-chroma_store
-arena_filtered
+chroma_store_all
+chroma_store_wu
+chroma_store_wuarena
+chroma_store_multiarena
+wu_txt
+multifunktion_arena
