@@ -28,52 +28,14 @@ client = OpenAI(api_key=openai_key)
 
 # Function to query documents
 def query_documents(question, n_results=2):
-    # Assuming collection.query returns the result (same as your code)
-    results = collection.query(query_texts=question, n_results=n_results) 
-
-    # Extract the relevant chunks
+    results = collection.query(query_texts=question, n_results=n_results)
     relevant_chunks = [doc for sublist in results["documents"] for doc in sublist]
-    
-    # Extract the IDs (cleaned)
-    ids = results['ids'][0]  # Extract the list of IDs
-    cleaned_ids = [re.sub(r'_chunk\d+', '', id) for id in ids]
-    
-    # Define the path to the text files
-    path = r'C:\Users\k54739\RAG\Rag_mainpost\wu_txts'
-
-    # Regular expressions to extract publication date
-    pub_date_pattern = r"Published Date of above article:(.*)"
-    
-    # Prepare the citation data (ID and publication date)
-    citation_data = []
-    
-    for file_name in cleaned_ids:
-        file_path = os.path.join(path, file_name)
-        file_path = os.path.join(path, file_name)
-        
-
-    
-        # Check if the file exists before reading it
-        if os.path.exists(file_path):
-            with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read()
-
-                # Extract publication date using regex
-                pub_date_match = re.search(pub_date_pattern, content)
-                pub_date = pub_date_match.group(1).strip() if pub_date_match else "Publication date not found"
-
-                # Add the citation (ID and publication date) to the list
-                citation_data.append(f"ID: {file_name} Published Date: {pub_date}")
-        else:
-            citation_data.append(f"{file_name} not found.")
-    
-    print("==== Returning relevant chunks ====")
-    return relevant_chunks, results, citation_data
+    return relevant_chunks
 
 
 
-# Function to generate a response (same as in your original script)
-def generate_response(question, relevant_chunks, citation_data):
+# Function to generate a response (same as in your original script)# Function to generate a response (same as in your original script)
+def generate_response(question, relevant_chunks):
     context = "\n\n".join(relevant_chunks)
     prompt = (
         "Du bist ein Assistent für Frage-Antwort-Aufgaben. Verwende die folgenden abgerufenen Kontextstücke, um die Frage zu beantworten."
@@ -97,12 +59,7 @@ def generate_response(question, relevant_chunks, citation_data):
     )
 
     answer = response.choices[0].message.content
-
-    # Append the citation (ID and Published Date) to the response
-    answer += "\n\nCitations:\n" + "\n".join(citation_data)
-    
     return answer
-
 
 # Streamlit App
 def main():
@@ -134,12 +91,9 @@ def main():
         
         # Retrieve relevant chunks and generate response
         try:
-            returned = query_documents(user_question)
-            relevant_chunks = returned[0]
-            citation_data = returned[2]  # Get the citation data
-
-            # Generate the response with citations
-            response = generate_response(user_question, relevant_chunks, citation_data)
+            #relevant_chunks = query_documents_modified(user_question)
+            relevant_chunks = query_documents(user_question)
+            response = generate_response(user_question, relevant_chunks)
             
             # Display assistant response
             with st.chat_message("assistant"):
