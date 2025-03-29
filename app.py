@@ -25,10 +25,19 @@ collection = chroma_client.get_or_create_collection(
 client = OpenAI(api_key=openai_key)
 
 # Function to query documents (same as in your original script)
-def query_documents_modified(question, n_results=2):
+"""def query_documents_modified(question, n_results=2):
     results = collection.query(query_texts=question, n_results=n_results)
     relevant_chunks = [doc for sublist in results["documents"] for doc in sublist]
-    return relevant_chunks
+    return relevant_chunks"""
+# Function to query documents
+def query_documents(question, n_results=2):
+    # query_embedding = get_openai_embedding(question)
+    results = collection.query(query_texts=question, n_results=n_results) # no of the results to be returned basically if its 2 then 2 most relevant chunks will be returned ie 2 docs. ie it can be chunk1 and chunk2 of single news.
+
+    # Extract the relevant chunks
+    relevant_chunks = [doc for sublist in results["documents"] for doc in sublist]
+    print("==== Returning relevant chunks ====")
+    return relevant_chunks, results
 
 # Function to generate a response (same as in your original script)
 def generate_response(question, relevant_chunks):
@@ -87,7 +96,9 @@ def main():
         
         # Retrieve relevant chunks and generate response
         try:
-            relevant_chunks = query_documents_modified(user_question)
+            #relevant_chunks = query_documents_modified(user_question)
+            returned = query_documents(user_question)
+            relevant_chunks = returned[0]
             response = generate_response(user_question, relevant_chunks)
             
             # Display assistant response
