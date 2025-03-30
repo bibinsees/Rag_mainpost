@@ -72,14 +72,23 @@ def query_documents(question, n_results=2):
 
 
 
-# Function to generate a response (same as in your original script)
+
 def generate_response(question, relevant_chunks, citation_data):
     context = "\n\n".join(relevant_chunks)
+    
+    # Convert citation_data list to a formatted string
+    citation_str = "\n".join(citation_data)
+
+    # Construct the prompt correctly
     prompt = (
-        "Du bist ein Assistent für Frage-Antwort-Aufgaben. Verwende die folgenden abgerufenen Kontextstücke, um die Frage zu beantworten."
-        "Wenn du die Antwort nicht weißt, sage, dass du es nicht weißt."
-        "Verwende maximal drei Sätze und halte die Antwort kurz."
-        "\n\nContext:\n" + context + "\n\nQuestion:\n" + question
+        "Du bist ein Assistent für Frage-Antwort-Aufgaben. Verwende die folgenden abgerufenen Kontextstücke, um die Frage zu beantworten. "
+        "Wenn du die Antwort nicht weißt, sage, dass du es nicht weißt. "
+        "Verwende maximal drei Sätze und halte die Antwort kurz. "
+        "Falls die Frage des Nutzers nicht die Tectake Arena, oder s.Oliver Arena oder Carl-Diem-Halle, betrifft, bitte sie, bei relevanten Themen zu bleiben, anstatt die Frage zu beantworten.\n\n"
+        "Falls sie relevant ist, gib am Ende deiner Antwort die folgende Quellenangabe aus:\n\n"
+        f"{citation_str}\n\n"
+        "Context:\n" + context + "\n\n"
+        "Question:\n" + question
     )
 
     response = client.chat.completions.create(
@@ -98,10 +107,8 @@ def generate_response(question, relevant_chunks, citation_data):
 
     answer = response.choices[0].message.content
 
-    # Append the citation (ID and Published Date) to the response
-    answer += "\n\nCitations:\n" + "\n".join(citation_data)
-    
     return answer
+
 
 
 # Streamlit App
