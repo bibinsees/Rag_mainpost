@@ -6,25 +6,32 @@ import chromadb
 from openai import OpenAI
 from chromadb.utils import embedding_functions
 
-# Load environment variables
-load_dotenv()
+# Streamlit input for OpenAI API key
+openai_api_key = st.text_input("OpenAI API Key", type="password")
 
-# Initialize OpenAI and Chroma clients
-openai_key = os.getenv("OPENAI_API_KEY")
+# Store API key in session state to persist it across interactions
+if openai_api_key:
+    st.session_state["openai_api_key"] = openai_api_key
 
-openai_ef = embedding_functions.OpenAIEmbeddingFunction(
-    api_key=openai_key, model_name="text-embedding-3-small"
-)
+# Use the stored key if available
+api_key = st.session_state.get("openai_api_key", None)
 
-# Initialize the Chroma client with persistence
-chroma_client = chromadb.PersistentClient(path="chroma_store_wu")
-collection_name = "document_qa_collection"
-collection = chroma_client.get_or_create_collection(
-    name=collection_name, embedding_function=openai_ef
-)
+if api_key:
+    # Initialize OpenAI and Chroma clients
+    openai_ef = embedding_functions.OpenAIEmbeddingFunction(
+        api_key=api_key, model_name="text-embedding-3-small"
+    )
+    
+    client = OpenAI(api_key=api_key)
 
-client = OpenAI(api_key=openai_key)
-
+    # Initialize the Chroma client with persistence
+    chroma_client = chromadb.PersistentClient(path="chroma_store_wu")
+    collection_name = "document_qa_collection"
+    collection = chroma_client.get_or_create_collection(
+        name=collection_name, embedding_function=openai_ef
+    )
+else:
+    st.warning("Bitte geben Sie einen gültigen OpenAI API-Schlüssel ein.")
 
 # Function to query documents
 def query_documents(question, n_results=2):
