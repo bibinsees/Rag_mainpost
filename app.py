@@ -164,7 +164,7 @@ def main():
     # Optional: Add a sidebar with document information
     st.sidebar.title("Dokumenten-Informationen")
     st.sidebar.info("Dieser Chatbot basiert auf einem Retrieval Augmented Generation (RAG) System.")
-    st.sidebar.info("Gesamtzahl der indizierten Nachrichtenartikel: 528")
+    #st.sidebar.info("Gesamtzahl der indizierten Nachrichtenartikel: 528")
     st.sidebar.info(f"Gesamtzahl der indizierten chunks: {collection.count()}")
 
 if __name__ == "__main__":
