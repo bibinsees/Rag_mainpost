@@ -9,7 +9,6 @@ from chromadb.utils import embedding_functions
 
 
 # Initialize OpenAI and Chroma clients
-import streamlit as st
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
