@@ -6,11 +6,11 @@ import chromadb
 from openai import OpenAI
 from chromadb.utils import embedding_functions
 
-# Load environment variablesd
-
+# Load environment variables
+load_dotenv()
 
 # Initialize OpenAI and Chroma clients
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+openai_key = os.getenv("OPENAI_API_KEY")
 
 openai_ef = embedding_functions.OpenAIEmbeddingFunction(
     api_key=openai_key, model_name="text-embedding-3-small"
